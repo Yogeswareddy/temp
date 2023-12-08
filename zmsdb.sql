@@ -11,7 +11,6 @@ SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
 
-
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
@@ -28,13 +27,14 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `tbladmin` (
-  `ID` int(10) NOT NULL,
+  `ID` int(10) NOT NULL AUTO_INCREMENT,
   `AdminName` varchar(120) DEFAULT NULL,
   `UserName` varchar(50) DEFAULT NULL,
   `MobileNumber` bigint(10) DEFAULT NULL,
   `Email` varchar(120) DEFAULT NULL,
   `Password` varchar(120) DEFAULT NULL,
-  `AdminRegdate` timestamp NULL DEFAULT current_timestamp()
+  `AdminRegdate` timestamp NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -51,14 +51,15 @@ INSERT INTO `tbladmin` (`ID`, `AdminName`, `UserName`, `MobileNumber`, `Email`, 
 --
 
 CREATE TABLE `tblanimal` (
-  `ID` int(10) NOT NULL,
+  `ID` int(10) NOT NULL AUTO_INCREMENT,
   `AnimalName` varchar(200) DEFAULT NULL,
   `CageNumber` int(10) DEFAULT NULL,
   `FeedNumber` varchar(200) DEFAULT NULL,
   `Breed` varchar(200) DEFAULT NULL,
   `AnimalImage` varchar(200) DEFAULT NULL,
   `Description` mediumtext DEFAULT NULL,
-  `CreationDate` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+  `CreationDate` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -82,13 +83,14 @@ INSERT INTO `tblanimal` (`ID`, `AnimalName`, `CageNumber`, `FeedNumber`, `Breed`
 --
 
 CREATE TABLE `tblpage` (
-  `ID` int(10) NOT NULL,
+  `ID` int(10) NOT NULL AUTO_INCREMENT,
   `PageType` varchar(200) DEFAULT NULL,
   `PageTitle` varchar(200) DEFAULT NULL,
   `PageDescription` mediumtext DEFAULT NULL,
   `Email` varchar(200) DEFAULT NULL,
   `MobileNumber` bigint(10) DEFAULT NULL,
-  `UpdationDate` timestamp NULL DEFAULT NULL ON UPDATE current_timestamp()
+  `UpdationDate` timestamp NULL DEFAULT NULL ON UPDATE current_timestamp(),
+  PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -106,14 +108,19 @@ INSERT INTO `tblpage` (`ID`, `PageType`, `PageTitle`, `PageDescription`, `Email`
 --
 
 CREATE TABLE `tblticforeigner` (
-  `ID` int(10) NOT NULL,
+  `ID` int(10) NOT NULL AUTO_INCREMENT,
   `TicketID` varchar(200) DEFAULT NULL,
   `visitorName` varchar(250) DEFAULT NULL,
   `NoAdult` int(10) DEFAULT NULL,
   `NoChildren` int(10) DEFAULT NULL,
   `AdultUnitprice` varchar(50) DEFAULT NULL,
   `ChildUnitprice` varchar(50) DEFAULT NULL,
-  `PostingDate` timestamp NULL DEFAULT current_timestamp()
+  `PostingDate` timestamp NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`ID`),
+  UNIQUE KEY `TicketID` (`TicketID`),
+  KEY `TicketID_2` (`TicketID`),
+  KEY `priceid` (`AdultUnitprice`),
+  CONSTRAINT `priceid` FOREIGN KEY (`AdultUnitprice`) REFERENCES `tbltickettype` (`Price`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -130,14 +137,18 @@ INSERT INTO `tblticforeigner` (`ID`, `TicketID`, `visitorName`, `NoAdult`, `NoCh
 --
 
 CREATE TABLE `tblticindian` (
-  `ID` int(10) NOT NULL,
+  `ID` int(10) NOT NULL AUTO_INCREMENT,
   `TicketID` varchar(100) NOT NULL,
   `visitorName` varchar(255) DEFAULT NULL,
   `NoAdult` int(10) DEFAULT NULL,
   `NoChildren` int(10) DEFAULT NULL,
   `AdultUnitprice` varchar(50) DEFAULT NULL,
   `ChildUnitprice` varchar(50) DEFAULT NULL,
-  `PostingDate` timestamp NULL DEFAULT current_timestamp()
+  `PostingDate` timestamp NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`ID`),
+  KEY `TicketID` (`TicketID`),
+  KEY `pidddd` (`ChildUnitprice`),
+  CONSTRAINT `pidddd` FOREIGN KEY (`ChildUnitprice`) REFERENCES `tbltickettype` (`Price`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -155,10 +166,13 @@ INSERT INTO `tblticindian` (`ID`, `TicketID`, `visitorName`, `NoAdult`, `NoChild
 --
 
 CREATE TABLE `tbltickettype` (
-  `ID` int(10) NOT NULL,
+  `ID` int(10) NOT NULL AUTO_INCREMENT,
   `TicketType` varchar(200) DEFAULT NULL,
   `Price` varchar(50) DEFAULT NULL,
-  `CreationDate` timestamp NULL DEFAULT current_timestamp()
+  `CreationDate` timestamp NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`ID`),
+  KEY `TicketType` (`TicketType`),
+  KEY `Price` (`Price`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -178,45 +192,26 @@ INSERT INTO `tbltickettype` (`ID`, `TicketType`, `Price`, `CreationDate`) VALUES
 --
 -- Indexes for table `tbladmin`
 --
-ALTER TABLE `tbladmin`
-  ADD PRIMARY KEY (`ID`);
 
 --
 -- Indexes for table `tblanimal`
 --
-ALTER TABLE `tblanimal`
-  ADD PRIMARY KEY (`ID`);
 
 --
 -- Indexes for table `tblpage`
 --
-ALTER TABLE `tblpage`
-  ADD PRIMARY KEY (`ID`);
 
 --
 -- Indexes for table `tblticforeigner`
 --
-ALTER TABLE `tblticforeigner`
-  ADD PRIMARY KEY (`ID`),
-  ADD UNIQUE KEY `TicketID` (`TicketID`),
-  ADD KEY `TicketID_2` (`TicketID`),
-  ADD KEY `priceid` (`AdultUnitprice`);
 
 --
 -- Indexes for table `tblticindian`
 --
-ALTER TABLE `tblticindian`
-  ADD PRIMARY KEY (`ID`),
-  ADD KEY `TicketID` (`TicketID`),
-  ADD KEY `pidddd` (`ChildUnitprice`);
 
 --
 -- Indexes for table `tbltickettype`
 --
-ALTER TABLE `tbltickettype`
-  ADD PRIMARY KEY (`ID`),
-  ADD KEY `TicketType` (`TicketType`),
-  ADD KEY `Price` (`Price`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -247,34 +242,4 @@ ALTER TABLE `tblticforeigner`
   MODIFY `ID` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- AUTO_INCREMENT for table `tblticindian`
---
-ALTER TABLE `tblticindian`
-  MODIFY `ID` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
-
---
--- AUTO_INCREMENT for table `tbltickettype`
---
-ALTER TABLE `tbltickettype`
-  MODIFY `ID` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
-
---
--- Constraints for dumped tables
---
-
---
--- Constraints for table `tblticforeigner`
---
-ALTER TABLE `tblticforeigner`
-  ADD CONSTRAINT `priceid` FOREIGN KEY (`AdultUnitprice`) REFERENCES `tbltickettype` (`Price`);
-
---
--- Constraints for table `tblticindian`
---
-ALTER TABLE `tblticindian`
-  ADD CONSTRAINT `pidddd` FOREIGN KEY (`ChildUnitprice`) REFERENCES `tbltickettype` (`Price`);
-COMMIT;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+-- AUTO_INCREMENT for table `tbl
